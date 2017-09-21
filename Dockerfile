@@ -4,7 +4,8 @@ RUN apt-get -qq update && apt-get -qq install -y \
     && rm -rf /var/lib/apt/lists/*
 RUN mkdir -p /root/.cache/unity3d && mkdir -p /root/.local/share/unity3d
 ADD get-unity.sh /app/get-unity.sh
-RUN chmod +x /app/get-unity.sh && \
+# Call "sync" between "chmod" and execution to prevent "text file busy" error in Docker (aufs)
+RUN chmod +x /app/get-unity.sh; sync; && \
     /app/get-unity.sh && \
     dpkg -i /app/unity_editor.deb && \
     rm /app/unity_editor.deb
